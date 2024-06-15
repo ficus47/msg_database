@@ -69,7 +69,7 @@ class Full_database:
 
 database = Full_database(Database(10), 10, "db")
 database.reset()
-for i in range(9**9**2):
+for i in range(9**3):
   database.stock("maman")
   database.stock("papa")
   database.stock("chien")
