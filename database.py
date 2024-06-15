@@ -4,10 +4,11 @@ import pickle
 import random
 import os
 
-class full_database:
+class Full_database:
   def __init__(self, first_database:Database, n_row, case):
-    self.content = [first_database]
+    os.makedirs(case, exist_ok=True)
 
+    self.content = [first_database]
     self.n_row = n_row
     self.case = case
 
@@ -33,28 +34,49 @@ class full_database:
     for i in os.listdir(self.case):
       os.remove(f"{self.case}/{i}")
 
-  def recv(self, name, msg):
+  def recv(self, msg, name, who):
     for i, j in zip(self.load(), range(1, len(os.listdir(self.case)))):
-      if i.name == name:
-        i.recv(msg, name)
+        i.recv(msg, name, who)
         with open(f"{self.case}/{j}.pickle", "wb") as file:
           pickle.dump(i, file)
 
+    for i, j in zip(self.content, range(len(self.content))):
+        i.recv(msg, name, who)
+        self.content[j] = i
+
   def find_msg(self, name):
-    for i in self.load():
-      j = i.find_name(name)
-      if j is not None:
-        return j
-    return None
+    if os.listdir(self.case):
+      for i in self.load():
+        j = i.find_name(name)
+        if j is not None:
+          return j
         
+    for i in self.content:
+        j = i.find_name(name)
+        if j is not None:
+          print("e")
+          return j
+    return None
+  
+  def print(self):
+    for i in self.load():
+      for i in i.content:
+        print(i.name, i.msg)
+        
+    for i in self.content:
+      for i in i.content:
+        print(i.name, i.msg)
 
-database = full_Database(Database(10), 10, "db")
+database = Full_database(Database(10), 10, "db")
+database.reset()
+for i in range(9**9**2):
+  database.stock("maman")
+  database.stock("papa")
+  database.stock("chien")
+  database.stock("chat")
 
-database.stock(Unit("maman"))
-database.stock(Unit("papa"))
+database.recv("msg", "maman", "papa")
 
-database.recv("msg", "maman")
+database.recv("2msg", "papa", "maman")
 
-database.recv("2msg", "papa")
-
-print(database.find_msg("papa"))
+print(database.find_msg("papa").msg)

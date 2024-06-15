@@ -10,13 +10,15 @@ class Database:
     else:
       self.content.append(content)
 
-  def recv(self, msg, name):
-    for i in self.content:
+  def recv(self, msg, name, who):
+    for i, j in zip(self.content, range(len(self.content))):
       if i.name == name:
-        i.recv(msg, name)
-
+        i.recv(msg, who)
+        self.content[j] = i
+        
   def find_name(self, name):
     for i in self.content:
-      if i.name == name:
+      if i.find_name(name):
         return i
     return None
+  
