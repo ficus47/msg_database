@@ -1,5 +1,8 @@
 from sub_database import Database
 from msg_unit import Unit
+import pickle
+import random
+import os
 
 class full_database:
   def __init__(self, first_database:Database, n_row, case):
@@ -17,7 +20,7 @@ class full_database:
       self.content.append(Database(self.n_row))
       self.save()
 
-  def stock(self):
+  def stock(self, name):
     self.content[-1].stock(Unit(name))
     self.update()
 
